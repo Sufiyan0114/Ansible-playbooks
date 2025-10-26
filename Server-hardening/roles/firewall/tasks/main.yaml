@@ -1,0 +1,48 @@
+# Tasks for firewall role
+- name: Update apt cache on ubuntu server
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  
+- name: Install UFW package
+  apt:
+    name: ufw
+    state: present
+    
+- name: Reset UFW to default settings
+  ufw:
+    state: disabled
+  
+- name: Reset UFW rules forcefully 
+  command: ufw --force reset
+  changed_when: true
+  
+- name: Set default incoming policy  to deny
+  ufw:
+    direction: incoming
+    policy: "{{ ufw_default_incoming }}"
+    
+- name: Set default outgoing policy to allow
+  ufw:
+    direction: outgoing
+    policy: "{{ ufw_default_outgoing }}"
+    
+- name: Allow specified ports 
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop: "{{ allowed_ports }}"
+  
+- name: Enable UFW firewall
+  ufw:
+    state: enabled
+    
+- name: Get UFW status
+  command: ufw status verbose
+  register: ufw_status
+  changed_when: false
+  
+- name: Display firewall status
+  debug:
+    var: ufw_status.stdout_lines

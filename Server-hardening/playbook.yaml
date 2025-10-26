@@ -1,0 +1,10 @@
+- name: Configure UFW Firewall on Ubuntu Servers
+  hosts: webserver
+  become: yes
+  vars_files:
+    - vars.yml
+  
+  roles:
+    - firewall 
+    - security
+    

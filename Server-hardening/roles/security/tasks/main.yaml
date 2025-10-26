@@ -1,0 +1,39 @@
+---
+# For security haddening 
+
+- name: Install Fail2Ban package to intrusion detection
+  apt:
+    name: fail2ban 
+    state: present
+    update_cache: yes
+  
+- name: Confirm Fail2Ban service is started and enabled
+  service:
+    name: fail2ban
+    state: started
+    enabled: yes
+    
+- name: Create a new sudo user 'sufiyan'
+  user:
+    name: sufiyan             
+    groups: sudo            
+    append: yes              
+    shell: /bin/bash      
+    state: present
+
+# SSH configure (useing sshd for ubuntu 6+ versions)
+- name: Disable root login over SSH
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+    state: present
+  notify: restart ssh  # send signal to handler to restart ssh
+
+- name: Disable password authentication over SSH
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    state: present
+  notify: restart ssh 

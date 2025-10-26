@@ -1,0 +1,7 @@
+# All variables
+allowed_ports:
+  - { port: "22", proto: "tcp" }
+  - { port: "443", proto: "tcp" }
+
+ufw_default_incoming: deny
+ufw_default_outgoing: allow  
